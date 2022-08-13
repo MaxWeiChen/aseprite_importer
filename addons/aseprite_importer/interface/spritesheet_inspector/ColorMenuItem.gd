@@ -1,18 +1,18 @@
-tool
+@tool
 extends Container
 
 
-onready var label : Label = $Header/Label
-onready var visibility_button: Button = $Header/VisibilityButton
-onready var color_picker : ColorPickerButton = $ColorPicker
+@onready var label : Label = %Label
+@onready var visibility_button: Button = %VisibilityButton
+@onready var color_picker : ColorPickerButton = %ColorPicker
 
 
-export var label_text := '' setget set_label_text
-export var visibility := true setget set_visibility
-export var show_visibility_button := true setget set_show_visibility_button
-export var color_value := Color.black setget set_color_value
-export var color_edit_alpha := true setget set_color_edit_alpha
-export(String, MULTILINE) var color_picker_tooltip := "" setget set_color_picker_tooltip
+@export var label_text := '': set = set_label_text
+@export var visibility := true: set = set_visibility
+@export var show_visibility_button := true: set = set_show_visibility_button
+@export var color_value := Color.BLACK: set = set_color_value
+@export var color_edit_alpha := true: set = set_color_edit_alpha
+@export_multiline var color_picker_tooltip := "": set = set_color_picker_tooltip
 
 
 var _visible_icon : Texture
@@ -30,8 +30,8 @@ func _ready():
 	self.color_edit_alpha = color_edit_alpha
 	self.color_picker_tooltip = color_picker_tooltip
 
-	visibility_button.connect('pressed', self, '_on_ViewButton_pressed')
-	color_picker.connect('color_changed', self, '_on_ColorPicker_color_changed')
+	visibility_button.pressed.connect(_on_ViewButton_pressed)
+	color_picker.color_changed.connect(_on_ColorPicker_color_changed)
 
 
 func _update_theme(editor_theme : EditorTheme) -> void:

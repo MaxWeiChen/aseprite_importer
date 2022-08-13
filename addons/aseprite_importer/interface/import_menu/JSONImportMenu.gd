@@ -1,11 +1,11 @@
-tool
+@tool
 extends Container
 
 
-onready var import_button : Button = $InputContainer/ImportButton
-onready var clear_button : Button = $InputContainer/ClearButton
-onready var file_dialog : FileDialog = $FileDialog
-onready var alert_dialog : AcceptDialog = $AlertDialog
+@onready var import_button : Button = $InputContainer/ImportButton
+@onready var clear_button : Button = $InputContainer/ClearButton
+@onready var file_dialog : FileDialog = $FileDialog
+@onready var alert_dialog : AcceptDialog = $AlertDialog
 
 
 const IMPORT_BUTTON_DEFAULT_TEXT = "Import JSON"
@@ -29,12 +29,10 @@ signal data_cleared
 
 func _ready():
 	clear_button.hide()
-
-	alert_dialog.set_as_toplevel(true)
-
-	import_button.connect("pressed", self, "_on_ImportButton_pressed")
-	clear_button.connect("pressed", self, "_on_ClearButton_pressed")
-	file_dialog.connect("file_selected", self, "_on_FileDialog_file_selected")
+	
+	import_button.pressed.connect(_on_ImportButton_pressed)
+	clear_button.pressed.connect(_on_ClearButton_pressed)
+	file_dialog.file_selected.connect(_on_FileDialog_file_selected)
 
 
 func set_json_filepath(new_filepath : String) -> void:
@@ -51,7 +49,7 @@ func _update_theme(editor_theme : EditorTheme) -> void:
 	clear_button.icon = editor_theme.get_icon("Clear")
 
 
-#Signal Callbacks
+# Signal Callbacks
 func _on_ImportButton_pressed() -> void:
 	file_dialog.invalidate()
 	file_dialog.popup_centered_ratio(0.5)
@@ -82,11 +80,13 @@ func _on_FileDialog_file_selected(path : String) -> void:
 				error_msg = MSG_JSON_OPEN_FILE_ERROR % [path, error]
 
 		set_json_filepath("")
-
-		yield(get_tree(), "idle_frame")
-		alert_dialog.dialog_text = error_msg
-		alert_dialog.popup_centered()
+		
+		call_deferred("alert_message", error_msg)
 	else:
 		set_json_filepath(path)
 
 		emit_signal("data_imported", import_data)
+
+func alert_message(error_msg : String):
+	alert_dialog.dialog_text = error_msg
+	alert_dialog.popup_centered()

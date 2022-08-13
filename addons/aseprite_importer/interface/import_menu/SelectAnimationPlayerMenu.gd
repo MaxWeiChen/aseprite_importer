@@ -1,15 +1,15 @@
-tool
+@tool
 extends Container
 
 
-onready var select_button : Button = $Button
-onready var select_node_dialog : WindowDialog = $SelectNodeDialog
+@onready var select_button : Button = $Button
+@onready var select_node_dialog : Window = $SelectNodeDialog
 
 
 const SELECT_BUTTON_DEFAULT_TEXT := "Select a Node"
 
 
-var animation_player : AnimationPlayer setget set_animation_player
+var animation_player : AnimationPlayer: set = set_animation_player
 
 
 signal node_selected(animation_player)
@@ -17,9 +17,9 @@ signal node_selected(animation_player)
 
 func _ready():
 	select_node_dialog.class_filters = ["AnimationPlayer"]
-
-	select_button.connect("pressed", self, "_on_SelectButton_pressed")
-	select_node_dialog.connect("node_selected", self, "_on_SelectNodeDialog_node_selected")
+	
+	select_button.pressed.connect(_on_SelectButton_pressed)
+	select_node_dialog.node_selected.connect(_on_SelectNodeDialog_node_selected)
 
 
 func get_state() -> Dictionary:
@@ -48,6 +48,9 @@ func _update_theme(editor_theme : EditorTheme) -> void:
 # Setters and Getters
 func set_animation_player(node : AnimationPlayer) -> void:
 	animation_player = node
+	
+	if(node == null):
+		return
 
 	var node_path := node.owner.get_parent().get_path_to(node)
 	select_button.text = node_path

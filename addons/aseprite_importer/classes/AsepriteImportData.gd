@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 class_name AsepriteImportData
 
@@ -47,10 +47,8 @@ const META_TEMPLATE = {
 	},
 }
 
-
 var json_filepath : String
 var json_data : Dictionary
-
 
 func load(filepath : String) -> int:
 	var file := File.new()
@@ -61,43 +59,42 @@ func load(filepath : String) -> int:
 
 	var file_text = file.get_as_text()
 	file.close()
-
-	var json := JSON.parse(file_text)
-	if json.error != OK:
+	
+	var json = JSON.new()
+	error = json.parse(file_text)
+	
+	if error != OK:
 		return Error.ERR_JSON_PARSE_ERROR
-
+	
 	error = _validate_json(json)
 	if error != OK:
 		return error
 
 	json_filepath = filepath
-	json_data = json.result
+	json_data = json.get_data()
 
 	return OK
 
-
 func get_frame_array() -> Array:
-	if not json_data:
+	if (json_data == null || not json_data is Dictionary):
 		return []
-
+	
 	var frame_data = json_data.frames
 	if frame_data is Dictionary:
 		return frame_data.values()
-
+	
 	return frame_data
 
-
 func get_image_filename() -> String:
-	if not (json_data and json_data.meta.has("image")):
+	if (json_data == null || not json_data is Dictionary || !json_data.meta.has("image")):
+		print("get_image_filename -> ", str(json_data))
 		return ""
-
 	return json_data.meta.image
 
-
 func get_image_size() -> Vector2:
-	if not json_data:
+	if (json_data == null || not json_data is Dictionary):
 		return Vector2.ZERO
-
+	
 	var image_size : Dictionary = json_data.meta.size
 	return Vector2(
 		image_size.w,
@@ -107,34 +104,34 @@ func get_image_size() -> Vector2:
 
 func get_tag(tag_idx : int) -> Dictionary:
 	var tags := get_tags()
-
+	
 	if tag_idx >= 0 and tag_idx < tags.size():
 		return tags[tag_idx]
-
+	
 	return {}
 
 
 func get_tags() -> Array:
-	if not json_data:
+	if (json_data == null):
 		return []
-
+	
 	return json_data.meta.frameTags
 
 
-static func _validate_json(json : JSONParseResult) -> int:
-	var data : Dictionary = json.result
-
+static func _validate_json(json : JSON) -> int:
+	var data = json.get_data()
+	
 	if not (data is Dictionary and data.has_all(["frames", "meta"])):
 		return Error.ERR_INVALID_JSON_DATA
-
+	
 	# "frames" validation
 	var frames = data.frames
-	var is_hash := frames is Dictionary
-
+	var is_hash : bool = (frames is Dictionary)
+	
 	for frame in frames:
 		if is_hash:
 			frame = frames[frame]
-
+		
 		if not _match_template(frame, FRAME_TEMPLATE):
 			return Error.ERR_INVALID_JSON_DATA
 
@@ -152,15 +149,13 @@ static func _validate_json(json : JSONParseResult) -> int:
 	return OK
 
 
-"""
-This helper function recursively walks an Array or a Dictionary checking if each
-children's type matches the template
-"""
+# This helper function recursively walks an Array or a Dictionary checking if each
+# children's type matches the template
 static func _match_template(data, template) -> bool:
 	match typeof(template):
 		TYPE_INT:
 			# When parsed, the JSON interprets integer values as floats
-			if template == TYPE_INT and typeof(data) == TYPE_REAL:
+			if template == TYPE_INT and typeof(data) == TYPE_FLOAT:
 				return true
 			return typeof(data) == template
 		TYPE_DICTIONARY:
@@ -177,7 +172,7 @@ static func _match_template(data, template) -> bool:
 			if typeof(data) != TYPE_ARRAY:
 				return false
 
-			if data.empty():
+			if data.is_empty():
 				return false
 
 			for element in data:

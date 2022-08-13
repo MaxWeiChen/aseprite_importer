@@ -1,34 +1,34 @@
-tool
+@tool
 extends Container
 
 
-onready var h_scroll_bar : HScrollBar = $HScrollBar
-onready var v_scroll_bar : VScrollBar = $VScrollBar
+@onready var h_scroll_bar : HScrollBar = $HScrollBar
+@onready var v_scroll_bar : VScrollBar = $VScrollBar
 
 
-export(Texture) var texture : Texture setget set_texture
-export(int, 1, 8) var zoom := 1 setget set_zoom
-export(Vector2) var offset := Vector2.ZERO setget set_offset
-export(bool)var zoom_to_fit := true
+@export var texture : Texture: set = set_texture
+@export_range(1,8) var zoom := 1: set = set_zoom
+@export var offset := Vector2.ZERO: set = set_render_offset
+@export var zoom_to_fit := true
 
 
 var frames = []
-var selected_frames := [] setget set_selected_frames
+var selected_frames := []: set = set_selected_frames
 
-var frame_border_color := Color.red
+var frame_border_color := Color.RED
 var frame_border_visibility := true
 
-var selection_border_color := Color.yellow
+var selection_border_color := Color.YELLOW
 var selection_border_visibility := true
 
 var border_width := 2
 
-var texture_background_color := Color.green
+var texture_background_color := Color.GREEN
 var texture_background_visibility := true
 
-var background_color := Color.blue
+var background_color := Color.BLUE
 
-var _full_rect := Rect2(Vector2.ZERO, rect_size)
+var _full_rect := Rect2(Vector2.ZERO, size)
 var _render_rect : Rect2
 var _texture_size : Vector2
 var _min_offset : Vector2
@@ -45,10 +45,10 @@ signal zoom_changed(new_zoom)
 func _ready() -> void:
 	h_scroll_bar.value = .5
 	v_scroll_bar.value = .5
-
-	connect("resized", self, "_on_resized")
-	h_scroll_bar.connect("value_changed", self, "_on_HScrollBar_value_changed")
-	v_scroll_bar.connect("value_changed", self, "_on_VScrollBar_value_changed")
+	
+	resized.connect(_on_resized)
+	h_scroll_bar.value_changed.connect(_on_HScrollBar_value_changed)
+	v_scroll_bar.value_changed.connect(_on_VScrollBar_value_changed)
 
 	update()
 
@@ -66,7 +66,7 @@ func _draw() -> void:
 
 	if frame_border_visibility:
 		for frame_idx in range(frames.size()):
-			if (not selection_border_visibility) or (not frame_idx in selected_frames):
+			if (!selection_border_visibility || not frame_idx in selected_frames):
 				_draw_frame_border(frame_idx)
 
 	if selection_border_visibility:
@@ -81,9 +81,8 @@ func _draw_frame_border(frame_idx : int, selected := false) -> void:
 	frame_rect.position += Vector2(sprite_region.x, sprite_region.y) * zoom
 	frame_rect.size = Vector2(sprite_region.w, sprite_region.h) * zoom
 
-	var border_color
-
-	if frame_idx in selected_frames:
+	var border_color : Color
+	if selected:
 		border_color = selection_border_color
 	else:
 		border_color = frame_border_color
@@ -94,18 +93,18 @@ func _draw_frame_border(frame_idx : int, selected := false) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		match event.button_index:
-			BUTTON_MIDDLE:
+			MOUSE_BUTTON_MIDDLE :
 				_panning = event.pressed
 
 				if _panning:
 					mouse_default_cursor_shape = CURSOR_DRAG
 				else:
 					mouse_default_cursor_shape = CURSOR_ARROW
-			BUTTON_WHEEL_UP, BUTTON_WHEEL_DOWN:
+			MOUSE_BUTTON_WHEEL_UP , MOUSE_BUTTON_WHEEL_DOWN :
 				if event.pressed:
 					_zoom_pivot = get_local_mouse_position()
 
-					if event.button_index == BUTTON_WHEEL_UP:
+					if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 						self.zoom += 1
 					else:
 						self.zoom -= 1
@@ -194,7 +193,7 @@ func _update_scrollbars() ->void:
 
 
 # Setters and Getters
-func set_offset(new_offset : Vector2) -> void:
+func set_render_offset(new_offset : Vector2) -> void:
 	new_offset.x = clamp(new_offset.x, _min_offset.x, _max_offset.x)
 	new_offset.y = clamp(new_offset.y, _min_offset.y, _max_offset.y)
 
@@ -269,7 +268,7 @@ func set_zoom(new_zoom : int) -> void:
 
 # Signal Callbacks
 func _on_resized() -> void:
-	_full_rect.size = rect_size
+	_full_rect.size = size
 
 	_zoom_pivot = _full_rect.size / 2
 
@@ -282,16 +281,16 @@ func _on_resized() -> void:
 	var rect := Rect2()
 
 	rect.position.x = 0
-	rect.position.y = (rect_size.y - h_scroll_bar.rect_size.y)
-	rect.size.x = (rect_size.x - v_scroll_bar.rect_size.x)
-	rect.size.y = h_scroll_bar.rect_size.y
+	rect.position.y = (size.y - h_scroll_bar.size.y)
+	rect.size.x = (size.x - v_scroll_bar.size.x)
+	rect.size.y = h_scroll_bar.size.y
 
 	fit_child_in_rect(h_scroll_bar, rect)
 
-	rect.position.x = (rect_size.x - v_scroll_bar.rect_size.x)
+	rect.position.x = (size.x - v_scroll_bar.size.x)
 	rect.position.y = 0
-	rect.size.x = v_scroll_bar.rect_size.x
-	rect.size.y = (rect_size.y - h_scroll_bar.rect_size.y)
+	rect.size.x = v_scroll_bar.size.x
+	rect.size.y = (size.y - h_scroll_bar.size.y)
 
 	fit_child_in_rect(v_scroll_bar, rect)
 

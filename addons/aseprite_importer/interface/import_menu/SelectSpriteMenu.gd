@@ -1,17 +1,17 @@
-tool
+@tool
 extends Container
 
 
-onready var select_button : Button = $Button
-onready var select_node_dialog : WindowDialog = $SelectNodeDialog
+@onready var select_button : Button = $Button
+@onready var select_node_dialog : Window = $SelectNodeDialog
 
 
 const SELECT_BUTTON_DEFAULT_TEXT := "Select a Node"
 
 
-var sprite : Node setget set_sprite
+var sprite : Node: set = set_sprite
 
-var _sprite_icon : Texture
+var _sprite2d_icon : Texture
 var _sprite3d_icon : Texture
 
 
@@ -19,10 +19,10 @@ signal node_selected(sprite)
 
 
 func _ready():
-	select_node_dialog.class_filters = ["Sprite", "Sprite3D"]
+	select_node_dialog.class_filters = ["Sprite2D", "Sprite3D"]
 
-	select_button.connect("pressed", self, "_on_SelectButton_pressed")
-	select_node_dialog.connect("node_selected", self, "_on_SelectNodeDialog_node_selected")
+	select_button.pressed.connect(_on_SelectButton_pressed)
+	select_node_dialog.node_selected.connect(_on_SelectNodeDialog_node_selected)
 
 
 func get_state() -> Dictionary:
@@ -42,30 +42,33 @@ func set_state(new_state : Dictionary) -> void:
 	else:
 		sprite = null
 		select_button.text = SELECT_BUTTON_DEFAULT_TEXT
-		select_button.icon = _sprite_icon
+		select_button.icon = _sprite2d_icon
 
 
 func _update_theme(editor_theme : EditorTheme) -> void:
 	var is_sprite3d := select_button.icon == _sprite3d_icon
 
-	_sprite_icon = editor_theme.get_icon("Sprite")
+	_sprite2d_icon = editor_theme.get_icon("Sprite2D")
 	_sprite3d_icon = editor_theme.get_icon("Sprite3D")
 
 	if is_sprite3d:
 		select_button.icon = _sprite3d_icon
 	else:
-		select_button.icon = _sprite_icon
+		select_button.icon = _sprite2d_icon
 
 
 # Setters and Getters
 func set_sprite(node : Node) -> void:
 	sprite = node
-
+	
+	if(node == null):
+		return
+	
 	var node_path := node.owner.get_parent().get_path_to(node)
 	select_button.text = node_path
 
-	if node.is_class("Sprite"):
-		select_button.icon = _sprite_icon
+	if node.is_class("Sprite2D"):
+		select_button.icon = _sprite2d_icon
 	elif node.is_class("Sprite3D"):
 		select_button.icon = _sprite3d_icon
 

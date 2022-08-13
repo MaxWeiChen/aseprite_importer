@@ -1,17 +1,16 @@
-tool
+@tool
 extends PanelContainer
 
-onready var import_menu : Container = $Body/ImportMenu
-onready var steps : Container = import_menu.get_node("Steps")
-onready var json_import_menu : Container = steps.get_node("JSONImportMenu")
-onready var tags_menu : Container = steps.get_node("TagsMenu")
-onready var select_animation_player_menu = steps.get_node("SelectAnimationPlayerMenu")
-onready var select_sprite_menu = steps.get_node("SelectSpriteMenu")
-onready var generate_button : Button = steps.get_node("GenerateButton")
+@onready var import_menu : Container = %ImportMenu
+@onready var json_import_menu : Container = %JSONImportMenu
+@onready var tags_menu : Container = %TagsMenu
+@onready var select_animation_player_menu = %SelectAnimationPlayerMenu
+@onready var select_sprite_menu = %SelectSpriteMenu
+@onready var generate_button : Button = %GenerateButton
 
-onready var spritesheet_inspector : Container = $Body/SpritesheetInspector
+@onready var spritesheet_inspector : Container = %SpritesheetInspector
 
-onready var alert_dialog : AcceptDialog = $AlertDialog
+@onready var alert_dialog : AcceptDialog = %AlertDialog
 
 
 const ERROR_MSG := {
@@ -35,15 +34,13 @@ signal animations_generated(animation_player)
 
 
 func _ready() -> void:
-	import_menu.rect_size.x = IMPORT_MENU_INITIAL_WIDTH
-
-	alert_dialog.set_as_toplevel(true)
-
-	json_import_menu.connect("data_imported", self, "_on_JSONImportMenu_data_imported")
-	json_import_menu.connect("data_cleared", self, "_on_JSONImportMenu_data_cleared")
-	tags_menu.connect("frame_selected", self, "_on_TagSelectMenu_frame_selected")
-	tags_menu.connect("tag_selected", self, "_on_TagSelectMenu_tag_selected")
-	generate_button.connect("pressed", self, "_on_GenerateButton_pressed")
+	import_menu.size.x = IMPORT_MENU_INITIAL_WIDTH
+	
+	json_import_menu.data_imported.connect(_on_JSONImportMenu_data_imported)
+	json_import_menu.data_cleared.connect(_on_JSONImportMenu_data_cleared)
+	tags_menu.frame_selected.connect(_on_TagSelectMenu_frame_selected)
+	tags_menu.tag_selected.connect(_on_TagSelectMenu_tag_selected)
+	generate_button.pressed.connect(_on_GenerateButton_pressed)
 
 
 func get_state() -> Dictionary:
@@ -68,14 +65,10 @@ func set_state(new_state : Dictionary) -> void:
 		json_filepath = import_data.json_filepath
 		tags = import_data.get_tags()
 		spritesheet_inspector.frames = import_data.get_frame_array()
-
-#		var selected_tag := import_data.get_tag(tag_name)
-#		if selected_tag:
-#			spritesheet_inspector.select_frames(range(selected_tag.from, selected_tag.to + 1))
+	
 	else:
 		import_data = null
 		new_state.erase("tags_menu")
-#		new_state.erase("spritesheet_inspector")
 
 	json_import_menu.set_json_filepath(json_filepath)
 

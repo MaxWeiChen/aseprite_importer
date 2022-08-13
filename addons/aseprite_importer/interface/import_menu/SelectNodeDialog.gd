@@ -1,17 +1,17 @@
-tool
-extends WindowDialog
+@tool
+extends Popup
 
 
-onready var body : VBoxContainer = $MarginContainer/Body
+@onready var body : VBoxContainer = $MarginContainer/Body
 
-onready var edited_scene_view : Container = body.get_node('EditedSceneView')
-onready var scene_tree : Tree = edited_scene_view.get_node('SceneTree')
+@onready var edited_scene_view : Container = body.get_node('EditedSceneView')
+@onready var scene_tree : Tree = edited_scene_view.get_node('SceneTree')
 
-onready var footer : HBoxContainer = body.get_node('Footer')
-onready var confirm_button : Button = footer.get_node('ConfirmButton')
-onready var cancel_button : Button = footer.get_node('CancelButton')
+@onready var footer : HBoxContainer = body.get_node('Footer')
+@onready var confirm_button : Button = footer.get_node('ConfirmButton')
+@onready var cancel_button : Button = footer.get_node('CancelButton')
 
-onready var alert_dialog : AcceptDialog = $AlertDialog
+@onready var alert_dialog : AcceptDialog = $AlertDialog
 
 
 enum Columns {
@@ -30,7 +30,7 @@ const WINDOW_TITLE_WITH_FILTER = "Select the %s Node"
 const DISABLED_ICON_MODULATE := Color(1, 1, 1, .5)
 
 
-var class_filters : Array setget set_class_filters
+var class_filters : Array: set = set_class_filters
 var edited_scene_root : Node
 
 
@@ -39,6 +39,7 @@ var _editor_theme : EditorTheme
 
 signal node_selected(selected_node)
 
+var string_join = func(a, e): return a + " / " + e
 
 func _ready():
 	self.class_filters = class_filters
@@ -46,11 +47,9 @@ func _ready():
 	scene_tree.columns = Columns.size()
 	scene_tree.set_column_expand(Columns.PATH, false)
 
-	alert_dialog.set_as_toplevel(true)
-
-	scene_tree.connect('item_activated', self, '_on_node_selected')
-	confirm_button.connect('pressed', self, '_on_node_selected')
-	cancel_button.connect('pressed', self, 'hide')
+	scene_tree.item_activated.connect(_on_node_selected)
+	confirm_button.pressed.connect(_on_node_selected)
+	cancel_button.pressed.connect(hide)
 
 
 func initialize() -> bool:
@@ -59,8 +58,8 @@ func initialize() -> bool:
 		_show_alert(MSG_EMPTY_SCENE)
 		return false
 
-	var scene_filename := edited_scene_root.filename
-	if not scene_filename:
+	var scene_filename : String = edited_scene_root.scene_file_path
+	if (scene_filename == null):
 		_show_alert(MSG_UNSAVED_SCENE)
 		return false
 
@@ -68,8 +67,8 @@ func initialize() -> bool:
 
 	var filtered_node_count := _add_node_to_scene_tree(edited_scene_root)
 
-	if class_filters and filtered_node_count == 0:
-		var filters_str := PoolStringArray(class_filters).join(" / ")
+	if (class_filters != null && filtered_node_count == 0):
+		var filters_str : String = class_filters.reduce(string_join)
 		_show_alert(MSG_NO_FILTERED_NODES_IN_SCENE % filters_str)
 		return false
 
@@ -125,10 +124,10 @@ func set_class_filters(filters : Array) -> void:
 	class_filters = filters
 
 	if class_filters != []:
-		var filters_str := PoolStringArray(class_filters).join(" / ")
-		window_title = WINDOW_TITLE_WITH_FILTER % filters_str
+		var filters_str : String = class_filters.reduce(string_join)
+		title = WINDOW_TITLE_WITH_FILTER % filters_str
 	else:
-		window_title = WINDOW_TITLE_DEFAULT
+		title = WINDOW_TITLE_DEFAULT
 
 
 # Signal Callbacks

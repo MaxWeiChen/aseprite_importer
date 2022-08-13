@@ -1,8 +1,8 @@
-tool
+@tool
 extends Container
 
 
-onready var options : Container = $Options
+@onready var options : Container = $Options
 
 
 const PROP_TO_COLOR_MENU := {
@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS :={
 		visibility = true,
 	},
 	selection_border = {
-		color = Color.yellow,
+		color = Color.YELLOW,
 		visibility = true,
 	},
 	texture_background = {
@@ -26,12 +26,12 @@ const DEFAULT_SETTINGS :={
 		visibility = true,
 	},
 	inspector_background = {
-		color = Color.black,
+		color = Color.BLACK,
 	},
 }
 
 
-var settings := DEFAULT_SETTINGS.duplicate(true) setget set_settings
+var settings := DEFAULT_SETTINGS.duplicate(true): set = set_settings
 
 
 signal settings_changed(settings)
@@ -44,7 +44,7 @@ func _ready():
 
 		color_menu.set_meta("property", property)
 
-		color_menu.connect("property_changed", self, "_on_ColorMenuItem_property_changed")
+		color_menu.property_changed.connect(_on_ColorMenuItem_property_changed)
 
 
 # Setters and Getters
