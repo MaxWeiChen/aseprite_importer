@@ -12,7 +12,7 @@ var interface : Control
 var editor_interface := get_editor_interface()
 var editor_base_control := editor_interface.get_base_control()
 var editor_settings := editor_interface.get_editor_settings()
-var editor_viewport := editor_interface.get_editor_main_control()
+var editor_viewport := editor_interface.get_editor_main_screen()
 
 
 var _state_set := false
@@ -21,9 +21,8 @@ var _state_set := false
 func _enter_tree() -> void:
 	interface = INTERFACE_SCN.instantiate()
 
-	interface.ready.connect(_on_interface_ready, CONNECT_ONESHOT)
+	interface.ready.connect(_on_interface_ready, CONNECT_ONE_SHOT)
 
-	#get_editor_interface().get_editor_main_control().add_child(interface)
 	editor_viewport.add_child(interface)
 	_make_visible(false)
 	

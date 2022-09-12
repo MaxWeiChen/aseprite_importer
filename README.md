@@ -49,7 +49,7 @@ Importing to Godot
 
 Compatability
 =======
-- Tested with Godot v4.0 alpha 14
+- Tested with Godot v4.0 alpha 16
 
 Limitations
 =======

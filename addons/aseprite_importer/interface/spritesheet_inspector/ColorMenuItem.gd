@@ -45,7 +45,7 @@ func _update_theme(editor_theme : EditorTheme) -> void:
 func set_color_picker_tooltip(text : String) -> void:
 	color_picker_tooltip = text
 	if color_picker:
-		color_picker.hint_tooltip = text
+		color_picker.tooltip_text = text
 
 
 func set_color_value(color: Color) -> void:
