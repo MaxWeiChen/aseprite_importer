@@ -102,10 +102,8 @@ func load_texture(path : String) -> int:
 		file_dialog.current_dir = dir_path
 
 		return ERR_INVALID_DATA
-
-	var file := File.new()
-
-	if !file.file_exists(path):
+	
+	if !FileAccess.file_exists(path):
 		_show_find_file_prompt(MSG_SPRITESHEET_NOT_FOUND % file_name)
 		file_dialog.current_dir = dir_path
 

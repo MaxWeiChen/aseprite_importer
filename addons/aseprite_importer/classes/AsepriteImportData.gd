@@ -51,17 +51,15 @@ var json_filepath : String
 var json_data : Dictionary
 
 func load(filepath : String) -> int:
-	var file := File.new()
-
-	var error := file.open(filepath, File.READ)
-	if error != OK:
+	var file = FileAccess.open(filepath, FileAccess.READ)
+	if(file == null):
+		var error := FileAccess.get_open_error()
 		return error
-
+	
 	var file_text = file.get_as_text()
-	file.close()
 	
 	var json = JSON.new()
-	error = json.parse(file_text)
+	var error := json.parse(file_text)
 	
 	if error != OK:
 		return Error.ERR_JSON_PARSE_ERROR
