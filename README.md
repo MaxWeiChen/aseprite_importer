@@ -10,7 +10,6 @@ What changes in Px Aseprite Impoter?
 ===============
 Add new function for select mutiple nodes by layers, so you can create a animation to control multiple sprites now.
 [![](https://github.com/MaxWeiChen/aseprite_importer/blob/master/images/screenshots/px_aseprite_importer_reveiw.png?raw=true)]
-(https://github.com/MaxWeiChen/aseprite_importer/blob/master/images/screenshots/px_aseprite_importer_reveiw?raw=true)
 
 What does it actually do?
 ================
