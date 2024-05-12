@@ -4,12 +4,14 @@
 
 **Forked from [Aseprite Importer](https://github.com/hectorid/aseprite_importer) and updated for Godot v4**
 
-[![](https://github.com/AtkinTC/aseprite_importer/blob/master/images/screenshots/plugin_preview.png?raw=true)](https://github.com/AtkinTC/aseprite_importer/blob/master/images/screenshots/plugin_preview.png?raw=true)
+**Forked from [Aseprite Importer 4](https://github.com/AtkinTC/aseprite_importer) and updated for mutiple nodes by layers**
 
 What changes in Px Aseprite Impoter?
 ===============
-Add new function for select mutiple nodes by layers, so you can create a animation to control multiple sprites now.
-[![](https://github.com/MaxWeiChen/aseprite_importer/blob/master/images/screenshots/px_aseprite_importer_reveiw.png?raw=true)]
+- Add new function for select mutiple nodes by layers
+- you can create a animation to control multiple sprites now.
+
+![](https://github.com/MaxWeiChen/aseprite_importer/blob/master/images/screenshots/px_aseprite_importer_reveiw.png?raw=true)
 
 What does it actually do?
 ================
