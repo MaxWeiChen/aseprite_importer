@@ -6,9 +6,10 @@
 
 [![](https://github.com/AtkinTC/aseprite_importer/blob/master/images/screenshots/plugin_preview.png?raw=true)](https://github.com/AtkinTC/aseprite_importer/blob/master/images/screenshots/plugin_preview.png?raw=true)
 
-What news in Px Aseprite Impoter?
+What changes in Px Aseprite Impoter?
 ===============
 Add new function for select mutiple nodes by layers, so you can create a animation to control multiple sprites now.
+(https://github.com/MaxWeichen/aseprite_importer/blob/master/images/screenshots/px_aseprite_importer_reveiw?raw=true)
 
 What does it actually do?
 ================
