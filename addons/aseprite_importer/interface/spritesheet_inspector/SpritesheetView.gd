@@ -75,6 +75,9 @@ func _draw() -> void:
 
 
 func _draw_frame_border(frame_idx : int, selected := false) -> void:
+	if frame_idx >= frames.size():
+		printerr("frame_idx is over frames.size(), the json no support use layers, please disable it.")
+		return
 	var sprite_region = frames[frame_idx].frame
 
 	var frame_rect := _render_rect
