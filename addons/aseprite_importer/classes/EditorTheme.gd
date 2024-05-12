@@ -8,7 +8,8 @@ var _theme : Theme
 
 func _init(theme : Theme) -> void:
 	_theme = theme
-
+	if _theme == null:
+		_theme = Theme.new()
 
 func get_color(color_name : String, color_list := "Editor") -> Color:
 	return _theme.get_color(color_name, color_list)

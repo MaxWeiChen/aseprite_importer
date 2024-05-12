@@ -9,10 +9,9 @@ const LIGHT_ICON = preload("interface/icons/light_icon.png")
 
 var interface : Control
 
-var editor_interface := get_editor_interface()
-var editor_base_control := editor_interface.get_base_control()
-var editor_settings := editor_interface.get_editor_settings()
-var editor_viewport := editor_interface.get_editor_main_screen()
+var editor_base_control := EditorInterface.get_base_control()
+var editor_settings := EditorInterface.get_editor_settings()
+var editor_viewport := EditorInterface.get_editor_main_screen()
 
 
 var _state_set := false
@@ -53,11 +52,10 @@ func _get_plugin_name():
 
 
 func _get_plugin_icon():
-	var editor_theme := editor_base_control.theme
-
-	if editor_theme.get_constant("dark_theme", "Editor"):
-		return LIGHT_ICON;
-
+	#var editor_theme := editor_base_control.theme
+#
+	#if editor_theme.get_constant("dark_theme", "Editor"):
+		#return LIGHT_ICON;
 	return DARK_ICON;
 
 
@@ -72,13 +70,13 @@ func set_state(state: Dictionary) -> void:
 
 
 func _update_theme() -> void:
-	var editor_theme := EditorTheme.new(editor_base_control.theme)
+	var editor_theme := EditorTheme.new(EditorInterface.get_editor_theme())
 	interface.propagate_call("_update_theme", [editor_theme])
 
 
 # Signal Callbacks
 func _on_animations_generated(animation_player : AnimationPlayer) -> void:
-	var editor_selection := get_editor_interface().get_selection()
+	var editor_selection := EditorInterface.get_selection()
 
 	editor_selection.clear()
 	# Reselect the AnimationPlayer node to show the new animations

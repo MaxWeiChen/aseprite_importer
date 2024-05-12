@@ -1,0 +1,27 @@
+[gd_scene load_steps=2 format=3 uid="uid://n8y72q0jwj02"]
+
+[ext_resource type="Script" path="res://addons/aseprite_importer/interface/import_menu/LayersMenu.gd" id="1_bmt27"]
+
+[node name="LayersMenu" type="VBoxContainer"]
+script = ExtResource("1_bmt27")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 2
+
+[node name="UseLayerCheckButton" type="CheckButton" parent="CenterContainer"]
+layout_mode = 2
+text = "Use Layer"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+follow_focus = true
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ScrollContainer"]
+layout_mode = 2
+
+[node name="CheckBox" type="CheckBox" parent="ScrollContainer/HBoxContainer"]
+layout_mode = 2
+text = "layer1"
+
+[connection signal="toggled" from="CenterContainer/UseLayerCheckButton" to="." method="_on_use_layer_check_button_toggled"]

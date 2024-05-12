@@ -1,9 +1,10 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://decthowxrmtvs"]
 
 [ext_resource type="Script" path="res://addons/aseprite_importer/interface/import_menu/SelectNodeDialog.gd" id="1"]
 
 [node name="SelectNodeDialog" type="Popup"]
 title = "Select a Node"
+position = Vector2i(0, 36)
 size = Vector2i(300, 200)
 unresizable = false
 borderless = false
@@ -11,53 +12,45 @@ min_size = Vector2i(300, 200)
 script = ExtResource("1")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="Body" type="VBoxContainer" parent="MarginContainer"]
-offset_right = 1024.0
-offset_bottom = 600.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="EditedSceneView" type="VBoxContainer" parent="MarginContainer/Body"]
-offset_right = 1024.0
-offset_bottom = 565.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="MarginContainer/Body/EditedSceneView"]
-offset_right = 1024.0
-offset_bottom = 26.0
+layout_mode = 2
 size_flags_horizontal = 3
 text = "Current Edited Scene:"
 
 [node name="SceneTree" type="Tree" parent="MarginContainer/Body/EditedSceneView"]
-offset_top = 30.0
-offset_right = 1024.0
-offset_bottom = 565.0
+layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 2
 
 [node name="Footer" type="HBoxContainer" parent="MarginContainer/Body"]
-offset_top = 569.0
-offset_right = 1024.0
-offset_bottom = 600.0
+layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="ConfirmButton" type="Button" parent="MarginContainer/Body/Footer"]
-offset_left = 205.0
-offset_right = 305.0
-offset_bottom = 31.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Select Node"
 
 [node name="CancelButton" type="Button" parent="MarginContainer/Body/Footer"]
-offset_left = 739.0
-offset_right = 799.0
-offset_bottom = 31.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Cancel"
 
 [node name="AlertDialog" type="AcceptDialog" parent="."]
+position = Vector2i(0, 36)
+size = Vector2i(100, 106)

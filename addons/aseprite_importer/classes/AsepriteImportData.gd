@@ -9,7 +9,9 @@ enum Error{
 	ERR_JSON_PARSE_ERROR = 49,
 	ERR_INVALID_JSON_DATA,
 	ERR_MISSING_FRAME_TAGS,
-	ERR_EMPTY_FRAME_TAGS
+	ERR_EMPTY_FRAME_TAGS,
+	ERR_MISSING_LAYERS_TAGS,
+	ERR_EMPTY_LAYERS_TAGS
 }
 
 const FRAME_TEMPLATE = {
@@ -45,6 +47,11 @@ const META_TEMPLATE = {
 		w = TYPE_INT,
 		h = TYPE_INT,
 	},
+	layers = [
+		{
+			name = TYPE_STRING,
+		},
+	],
 }
 
 var json_filepath : String
@@ -82,6 +89,20 @@ func get_frame_array() -> Array:
 		return frame_data.values()
 	
 	return frame_data
+	
+
+func get_frame_count_each_layer(is_use_layers : bool) -> int:
+	if (json_data == null || not json_data is Dictionary):
+		return 0
+		
+	var frames_count = get_frame_array().size()
+	if is_use_layers:
+		var layers_count = get_layers().size()
+		#print("get_frame_count_each_layer -> ", frames_count, " / ", layers_count, " = ", frames_count / layers_count)
+		return frames_count / layers_count
+	
+	#print("get_frame_count_each_layer -> ", frames_count)
+	return frames_count
 
 func get_image_filename() -> String:
 	if (json_data == null || not json_data is Dictionary || !json_data.meta.has("image")):
@@ -114,6 +135,16 @@ func get_tags() -> Array:
 		return []
 	
 	return json_data.meta.frameTags
+	
+	
+func get_layers() -> Array:
+	if (json_data == null):
+		return []
+	var layer_names :=[]
+	for layer in json_data.meta.layers:
+		if layer.name != "ALL":
+			layer_names.append(layer.name)
+	return layer_names
 
 
 static func _validate_json(json : JSON) -> int:
@@ -133,16 +164,23 @@ static func _validate_json(json : JSON) -> int:
 		if not _match_template(frame, FRAME_TEMPLATE):
 			return Error.ERR_INVALID_JSON_DATA
 
+
 	# "meta" validation
 	if not _match_template(data.meta, META_TEMPLATE):
 		var meta := data.meta as Dictionary
-
+		# "framgeTags" validation
 		if not meta.has("frameTags"):
 			return Error.ERR_MISSING_FRAME_TAGS
 		elif meta.frameTags == []:
 			return Error.ERR_EMPTY_FRAME_TAGS
+		# "layers" validation
+		if not meta.has("layers"):
+			return Error.ERR_MISSING_LAYERS_TAGS
+		elif meta.layers == []:
+			return Error.ERR_EMPTY_LAYERS_TAGS
 
 		return Error.ERR_INVALID_JSON_DATA
+	
 
 	return OK
 
